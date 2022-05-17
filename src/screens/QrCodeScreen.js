@@ -13,6 +13,17 @@ const QrCodeScreen = ({ navigation }) => {
     })();
   }, []);
 
+  const GetUserName = ({ baseUrl }) => {
+    return fetch(baseUrl)
+      .then((response) => response.json())
+      .then((json) => {
+        return json;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
     // 1. Validate scanned QR code
@@ -22,6 +33,7 @@ const QrCodeScreen = ({ navigation }) => {
     }
 
     // 2. Get user info from server (there is such user, )
+    var userName = GetUserName(data);
 
     // 2. Update global varialbes
     // global.baseURL = data;
