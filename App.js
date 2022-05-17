@@ -5,6 +5,7 @@ import HomeScreen from "./src/screens/HomeScreen";
 //import { PairInfoScreen } from "./src/screens/PairInfoScreen";
 import { InputLinkScreen } from "./src/screens/InputLinkScreen";
 import QrCodeScreen from "./src/screens/QrCodeScreen";
+// import ExampleScreen from "./src/screens/ExampleScreen";
 
 const navigator = createStackNavigator(
   {
@@ -25,6 +26,9 @@ const navigator = createStackNavigator(
     Link: InputLinkScreen,
     //  List: PairListScreen,
     //  Info: PairInfoScreen,
+
+    // An example of adding new screen
+    // Example: ExampleScreen,
   },
   {
     initialRouteName: "Home",
