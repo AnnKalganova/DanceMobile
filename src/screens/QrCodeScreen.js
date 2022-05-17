@@ -13,13 +13,24 @@ const QrCodeScreen = ({ navigation }) => {
     })();
   }, []);
 
+  const GetUserName = ({ baseUrl }) => {
+    return fetch(baseUrl)
+      .then((response) => response.json())
+      .then((json) => {
+        return json;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
     // 1. Pop up to Home screen
     navigation.popToTop();
 
     // 2. Get user name,
-
+    var userName = GetUserName(data);
     // 2. Navigate  to Home screen
     navigation.navigate("Link");
     alert(`Bar code with type ${type} and data ${data} has been scanned!`);

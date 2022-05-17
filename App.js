@@ -18,9 +18,9 @@ const navigator = createStackNavigator(
 
     QrCode: {
       screen: QrCodeScreen,
-      // navigationOptions: {
-      //   headerShown: false,
-      // },
+      navigationOptions: {
+        headerShown: false,
+      },
     },
 
     Link: InputLinkScreen,
