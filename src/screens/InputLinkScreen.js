@@ -4,7 +4,7 @@ import { View, Button, TextInput, StyleSheet } from "react-native";
 export class InputLinkScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = { link: "" };
+    this.state = { link: global.baseURL };
   }
 
   render() {

@@ -15,14 +15,26 @@ const QrCodeScreen = ({ navigation }) => {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    // 1. Pop up to Home screen
-    navigation.popToTop();
+    // 1. Validate scanned QR code
+    if (!data.includes("Registration") && !data.includes("Referee")) {
+      alert(`QR Code содержит не верную формат данных. Попробуйте еще раз.`);
+      return;
+    }
 
-    // 2. Get user name,
+    // 2. Get user info from server (there is such user, )
+
+    // 2. Update global varialbes
+    // global.baseURL = data;
+    // global.userType = data.includes("Registration")
+    //   ? "Reg"
+    //   : data.includes("Referee")
+    //   ? "Ref"
+    //   : "";
 
     // 2. Navigate  to Home screen
-    navigation.navigate("Link");
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    // navigation.popToTop();
+    // navigation.navigate("Link");
+    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
   };
 
   if (hasPermission === null) {
