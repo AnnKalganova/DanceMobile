@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
+import { Text, View, StyleSheet, Button, Pressable } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const QrCodeScreen = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  // UseEffect works on the screen load
   useEffect(() => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -13,47 +16,73 @@ const QrCodeScreen = ({ navigation }) => {
     })();
   }, []);
 
-  const GetUserName = ({ baseUrl }) => {
-    return fetch(baseUrl)
-      .then((response) => response.json())
-      .then((json) => {
-        return json;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  // UseEffect works on QR Code scanned
+  useEffect(() => {
+    if (!scanned) return;
+    if (global.baseURL == "") return;
+
+    GetUserInfo(global.baseURL);
+  }, [scanned]);
+
+  // Retrieve
+  const GetUserInfo = async (baseUrl) => {
+    try {
+      setLoading(true);
+
+      // TODO: need to process screen close (navigate back) to stop fetch
+      const controller = new AbortController();
+      const signal = controller.signal;
+
+      let response = await fetch(baseUrl, { signal });
+      if (response.status != 200) {
+        alert("ОШИБКА (2): Не верный формат QR кода. Попробуйте еще раз.");
+        setScanned(false);
+        return;
+      }
+
+      let json = await response.json();
+      global.userInfo = json;
+
+      if (baseUrl.includes("Registration")) {
+        global.userType = "Registration";
+      } else if (global.baseURL.includes("Referee")) {
+        global.userType = "Referee";
+      }
+
+      navigation.replace("Link");
+    } catch (error) {
+      console.log(`Catch: ${error}`);
+      setScanned(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // Triggered on QR code scanned
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    // 1. Validate scanned QR code
-    if (!data.includes("Registration") && !data.includes("Referee")) {
-      alert(`QR Code содержит не верную формат данных. Попробуйте еще раз.`);
+
+    global.baseURL = data;
+
+    // Test URL
+    // global.baseURL = "http://192.168.1.6:41837/api/Registration/asdfasfasfsaf";
+
+    // Validate scanned QR code ()
+    if (
+      !global.baseURL.includes("Registration") &&
+      !global.baseURL.includes("Referee")
+    ) {
+      alert("ОШИБКА (1): Не верный формат QR кода. Попробуйте еще раз.");
+      global.baseURL = "";
       return;
     }
-
-    // 2. Get user info from server (there is such user, )
-    var userName = GetUserName(data);
-
-    // 2. Update global varialbes
-    // global.baseURL = data;
-    // global.userType = data.includes("Registration")
-    //   ? "Reg"
-    //   : data.includes("Referee")
-    //   ? "Ref"
-    //   : "";
-
-    // 2. Navigate  to Home screen
-    // navigation.popToTop();
-    // navigation.navigate("Link");
-    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
   };
 
   if (hasPermission === null) {
-    return <Text>Requesting for camera permission</Text>;
+    return <Text>Запрашиваем доступ к камере</Text>;
   }
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    return <Text>Нет доступа к камере</Text>;
   }
 
   return (
@@ -62,9 +91,17 @@ const QrCodeScreen = ({ navigation }) => {
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={StyleSheet.absoluteFillObject}
       />
-      {scanned && (
-        <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
+      {scanned && !loading && (
+        <Pressable
+          style={styles.pressable_button}
+          onPress={() => {
+            setScanned(false);
+          }}
+        >
+          <Text style={styles.btn_text}>Cканировать QR код еще раз</Text>
+        </Pressable>
       )}
+      {loading && <Text style={styles.btn_text}>Загрузка...</Text>}
     </View>
   );
 };
@@ -76,30 +113,23 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#000",
   },
-  bottomBar: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    padding: 15,
+
+  pressable_button: {
     flexDirection: "row",
-  },
-  url: {
-    flex: 1,
-  },
-  urlText: {
-    color: "#fff",
-    fontSize: 20,
-  },
-  cancelButton: {
-    marginLeft: 10,
     alignItems: "center",
     justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    marginTop: 100,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: "white",
+    borderColor: "#428BCA",
+    borderWidth: 1,
   },
-  cancelButtonText: {
-    color: "rgba(255,255,255,0.8)",
-    fontSize: 18,
+  btn_text: {
+    fontSize: 16,
+    color: "#428BCA",
   },
 });
 

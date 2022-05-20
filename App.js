@@ -11,6 +11,7 @@ import QrCodeScreen from "./src/screens/QrCodeScreen";
 // Should be filled in on QrCodeScreen
 global.baseURL = "";
 global.userType = "";
+global.userInfo = null;
 
 const navigator = createStackNavigator(
   {
@@ -29,7 +30,13 @@ const navigator = createStackNavigator(
       },
     },
 
-    Link: InputLinkScreen,
+    Link: {
+      screen: InputLinkScreen,
+      navigationOptions: {
+        // headerShown: false,
+        title: "Список групп",
+      },
+    },
     //  List: PairListScreen,
     //  Info: PairInfoScreen,
 

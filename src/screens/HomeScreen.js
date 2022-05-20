@@ -3,6 +3,8 @@ import { Text, StyleSheet, View, Image, Pressable } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const HomeScreen = ({ navigation }) => {
+  console.log(`Home screen`);
+
   return (
     <View style={styles.view}>
       <Image style={styles.image} source={require("../../assets/pair.png")} />
@@ -16,7 +18,7 @@ const HomeScreen = ({ navigation }) => {
         <Text style={styles.btn_text}>Сканировать</Text>
       </Pressable> */}
       {ScanButton(navigation)}
-      {MainButton(navigation, "QrCode", "qrcode-scan", "Сканировать")}
+      {/* {MainButton(navigation, "QrCode", "qrcode-scan", "Сканировать")} */}
     </View>
   );
 };
