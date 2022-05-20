@@ -6,6 +6,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 const QrCodeScreen = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
+  const [rescan, setRescan] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // UseEffect works on the screen load
@@ -36,7 +37,7 @@ const QrCodeScreen = ({ navigation }) => {
       let response = await fetch(baseUrl, { signal });
       if (response.status != 200) {
         alert("ОШИБКА (2): Не верный формат QR кода. Попробуйте еще раз.");
-        setScanned(false);
+        setRescan(true);
         return;
       }
 
@@ -52,7 +53,7 @@ const QrCodeScreen = ({ navigation }) => {
       navigation.replace("Link");
     } catch (error) {
       console.log(`Catch: ${error}`);
-      setScanned(false);
+      setRescan(true);
     } finally {
       setLoading(false);
     }
@@ -61,6 +62,7 @@ const QrCodeScreen = ({ navigation }) => {
   // Triggered on QR code scanned
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
+    setRescan(false);
 
     global.baseURL = data;
 
@@ -74,6 +76,7 @@ const QrCodeScreen = ({ navigation }) => {
     ) {
       alert("ОШИБКА (1): Не верный формат QR кода. Попробуйте еще раз.");
       global.baseURL = "";
+      setRescan(true);
       return;
     }
   };
@@ -91,7 +94,7 @@ const QrCodeScreen = ({ navigation }) => {
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={StyleSheet.absoluteFillObject}
       />
-      {scanned && !loading && (
+      {scanned && rescan && (
         <Pressable
           style={styles.pressable_button}
           onPress={() => {
