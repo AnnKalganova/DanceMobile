@@ -25,8 +25,10 @@ const QrCodeScreen = ({ navigation }) => {
     GetUserInfo(global.baseURL);
   }, [scanned]);
 
-  // Retrieve
+  // Retrieve user info (based on QR code)
   const GetUserInfo = async (baseUrl) => {
+    console.log(global.baseURL);
+
     try {
       setLoading(true);
 
@@ -50,7 +52,8 @@ const QrCodeScreen = ({ navigation }) => {
         global.userType = "Referee";
       }
 
-      navigation.replace("Link");
+      navigation.replace("RegGroups");
+      // navigation.navigate("Groups");
     } catch (error) {
       console.log(`Catch: ${error}`);
       setRescan(true);
