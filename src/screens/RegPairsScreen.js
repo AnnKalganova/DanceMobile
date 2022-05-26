@@ -98,6 +98,22 @@ const RegPairsScreen = ({ navigation }) => {
     getPairs();
   };
 
+  const onAddPairPress = () => {
+    let newPair = {
+      id: null,
+      groupId: group.id,
+      partner1FirstName: "",
+      partner1LastName: "",
+      partner2FirstName: "",
+      partner2LastName: "",
+      number: null,
+    };
+
+    navigation.navigate("RegEditPair", {
+      pair: newPair,
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
@@ -107,6 +123,14 @@ const RegPairsScreen = ({ navigation }) => {
         refreshing={refreshing}
         onRefresh={handleRefresh}
       />
+      <Pressable
+        style={styles.addButton}
+        onPress={() => {
+          onAddPairPress();
+        }}
+      >
+        <Text style={styles.addText}>+</Text>
+      </Pressable>
     </SafeAreaView>
   );
 };
@@ -115,6 +139,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // marginTop: StatusBar.currentHeight || 0,
+  },
+
+  addButton: {
+    alignSelf: "flex-end",
+    backgroundColor: GLOBALS.COLOR.HEADERBLUE,
+    width: 70,
+    height: 70,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 35,
+    elevation: 3,
+    margin: 30,
+  },
+
+  addText: {
+    fontSize: 48,
+    color: "white",
+    lineHeight: 48,
   },
 
   item: {

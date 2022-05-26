@@ -61,8 +61,19 @@ const RegEditPairScreen = ({ navigation }) => {
   onSavePress = () => {
     if (!validateForm()) return;
 
+    let requestMethod = "";
+    let requestUrl = "";
+
+    if (pair.id == null) {
+      requestMethod = "POST";
+      requestUrl = global.baseURL + "/createPair";
+    } else {
+      requestMethod = "PUT";
+      requestUrl = global.baseURL + "/" + pair.id;
+    }
+
     const requestOptions = {
-      method: "PUT",
+      method: requestMethod,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         id: pair.id,
@@ -75,7 +86,7 @@ const RegEditPairScreen = ({ navigation }) => {
       }),
     };
 
-    fetch(global.baseURL + "/" + pair.id, requestOptions)
+    fetch(requestUrl, requestOptions)
       .then(
         (result) => {
           if (result.status == 204) {
@@ -140,6 +151,19 @@ const RegEditPairScreen = ({ navigation }) => {
       .catch((e) => console.log(e));
   };
 
+  const deleteButton = () => {
+    return (
+      <Pressable
+        style={styles.deleteButton}
+        onPress={() => {
+          onDeletePress();
+        }}
+      >
+        <Text style={styles.deleteText}>Удалить</Text>
+      </Pressable>
+    );
+  };
+
   return (
     <KeyboardAwareScrollView style={styles.container}>
       <TextInput
@@ -185,14 +209,16 @@ const RegEditPairScreen = ({ navigation }) => {
         <Text style={styles.saveText}>Сохранить</Text>
       </Pressable>
 
-      <Pressable
+      {/* <Pressable
         style={styles.deleteButton}
         onPress={() => {
           onDeletePress();
         }}
       >
         <Text style={styles.deleteText}>Удалить</Text>
-      </Pressable>
+      </Pressable> */}
+
+      {pair.id != null && deleteButton()}
     </KeyboardAwareScrollView>
   );
 };
