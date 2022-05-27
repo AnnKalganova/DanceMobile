@@ -1,25 +1,16 @@
 import React, { useState, useEffect } from "react";
-import {
-  Text,
-  StyleSheet,
-  View,
-  Button,
-  SafeAreaView,
-  Pressable,
-  TextInput,
-  Alert,
-} from "react-native";
+import { Text, StyleSheet, Pressable, TextInput, Alert } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import GLOBALS from "../../Globals";
 
 const RegEditPairScreen = ({ navigation }) => {
   const pair = navigation.getParam("pair");
 
-  const [pairNumber, onChangePairNumber] = React.useState(null);
-  const [p1LastName, onChangeP1LastName] = React.useState(null);
-  const [p1FirstName, onChangeP1FirstName] = React.useState(null);
-  const [p2LastName, onChangeP2LastName] = React.useState(null);
-  const [p2FirstName, onChangeP2FirstName] = React.useState(null);
+  const [pairNumber, onChangePairNumber] = useState(null);
+  const [p1LastName, onChangeP1LastName] = useState(null);
+  const [p1FirstName, onChangeP1FirstName] = useState(null);
+  const [p2LastName, onChangeP2LastName] = useState(null);
+  const [p2FirstName, onChangeP2FirstName] = useState(null);
 
   useEffect(() => {
     if (pair != null) {
@@ -36,13 +27,13 @@ const RegEditPairScreen = ({ navigation }) => {
     let isValid = false;
 
     if (p1LastName.trim() == "") {
-      message = "Необходимо ввести фамилию партнера.";
+      message = "Необходимо ввести фамилию партнера";
     } else if (p1FirstName.trim() == "") {
-      message = "Необходимо ввести имя партнера.";
+      message = "Необходимо ввести имя партнера";
     } else if (p2LastName.trim() == "") {
-      message = "Необходимо ввести фамилию партнерши.";
+      message = "Необходимо ввести фамилию партнерши";
     } else if (p2FirstName.trim() == "") {
-      message = "Необходимо ввести имя партнерши.";
+      message = "Необходимо ввести имя партнерши";
     } else {
       isValid = true;
     }
@@ -68,8 +59,8 @@ const RegEditPairScreen = ({ navigation }) => {
       requestMethod = "POST";
       requestUrl = global.baseURL + "/createPair";
     } else {
-      requestMethod = "PUT";
-      requestUrl = global.baseURL + "/" + pair.id;
+      requestMethod = "POST";
+      requestUrl = global.baseURL + "/updatePair";
     }
 
     const requestOptions = {
@@ -89,7 +80,7 @@ const RegEditPairScreen = ({ navigation }) => {
     fetch(requestUrl, requestOptions)
       .then(
         (result) => {
-          if (result.status == 204) {
+          if (result.status == 200) {
             navigation.goBack();
           } else {
             Alert.alert("Ошибка!", "Код ошибки: " + result.status, [
@@ -125,13 +116,16 @@ const RegEditPairScreen = ({ navigation }) => {
 
   const deletePair = () => {
     const requestOptions = {
-      method: "DELETE",
+      method: "POST",
     };
 
-    fetch(global.baseURL + "/" + pair.id, requestOptions)
+    fetch(
+      global.baseURL + "/deletePair/" + pair.id + "/" + pair.groupId,
+      requestOptions
+    )
       .then(
         (result) => {
-          if (result.status == 204) {
+          if (result.status == 200) {
             navigation.goBack();
           } else {
             Alert.alert("Ошибка!", "Код ошибки: " + result.status, [
@@ -208,15 +202,6 @@ const RegEditPairScreen = ({ navigation }) => {
       >
         <Text style={styles.saveText}>Сохранить</Text>
       </Pressable>
-
-      {/* <Pressable
-        style={styles.deleteButton}
-        onPress={() => {
-          onDeletePress();
-        }}
-      >
-        <Text style={styles.deleteText}>Удалить</Text>
-      </Pressable> */}
 
       {pair.id != null && deleteButton()}
     </KeyboardAwareScrollView>

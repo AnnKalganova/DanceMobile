@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button, Pressable } from "react-native";
+import { Text, View, StyleSheet, Pressable } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const QrCodeScreen = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -69,10 +68,6 @@ const QrCodeScreen = ({ navigation }) => {
 
     global.baseURL = data;
 
-    // Test URL
-    // global.baseURL = "http://192.168.1.6:41837/api/Registration/asdfasfasfsaf";
-
-    // Validate scanned QR code ()
     if (
       !global.baseURL.includes("Registration") &&
       !global.baseURL.includes("Referee")

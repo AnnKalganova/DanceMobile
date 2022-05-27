@@ -3,17 +3,10 @@ import {
   View,
   Text,
   StyleSheet,
-  RefreshControl,
-  ScrollView,
   FlatList,
-  StatusBar,
   SafeAreaView,
   Pressable,
 } from "react-native";
-import { NavigationActions, withNavigation } from "react-navigation";
-// import { useRoute } from "@react-navigation/native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-
 import GLOBALS from "../../Globals";
 
 const RegPairsScreen = ({ navigation }) => {
@@ -138,7 +131,6 @@ const RegPairsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // marginTop: StatusBar.currentHeight || 0,
   },
 
   addButton: {

@@ -1,21 +1,21 @@
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
-import HomeScreen from "./src/screens/HomeScreen";
-//import { PairListScreen } from "./src/screens/PairListScreen";
-//import { PairInfoScreen } from "./src/screens/PairInfoScreen";
 
+import HomeScreen from "./src/screens/HomeScreen";
 import QrCodeScreen from "./src/screens/QrCodeScreen";
+
 import RegGroupsScreen from "./src/screens/RegGroupsScreen";
 import RegPairsScreen from "./src/screens/RegPairsScreen";
 import RegEditPairScreen from "./src/screens/RegEditPairScreen";
+
+import ReffGroupsScreen from "./src/screens/ReffGroupsScreen";
+
+import GLOBALS from "./Globals";
 
 // import ExampleScreen from "./src/screens/ExampleScreen";
 
 // Holds Base URL and User Type that will be used on other screens
 // Should be filled in on QrCodeScreen
-
-import GLOBALS from "./Globals";
-
 global.baseURL = "";
 global.userType = "";
 global.userInfo = null;
@@ -48,7 +48,6 @@ const navigator = createStackNavigator(
       screen: RegPairsScreen,
       navigationOptions: {
         title: "Список пар",
-        // title: ({ route }) => ({"asdfadf";}),
       },
     },
 
@@ -56,6 +55,13 @@ const navigator = createStackNavigator(
       screen: RegEditPairScreen,
       navigationOptions: {
         title: "Редактирование пары",
+      },
+    },
+
+    ReffGroups: {
+      screen: ReffGroupsScreen,
+      navigationOptions: {
+        title: "Список групп",
       },
     },
 
@@ -67,6 +73,15 @@ const navigator = createStackNavigator(
     defaultNavigationOptions: {
       headerStyle: {
         backgroundColor: GLOBALS.COLOR.HEADERBLUE,
+
+        shadowColor: "#AAA",
+        shadowOffset: {
+          width: 2,
+          height: 4,
+        },
+        shadowRadius: 5,
+        shadowOpacity: 0.8,
+        elevation: 2,
       },
       headerTintColor: "white",
     },

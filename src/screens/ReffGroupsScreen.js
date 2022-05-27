@@ -11,7 +11,7 @@ import {
 import { Feather } from "@expo/vector-icons";
 import GLOBALS from "../../Globals";
 
-const RegGroupsScreen = ({ navigation }) => {
+const ReffGroupsScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [data, setData] = useState([]);
@@ -156,32 +156,10 @@ const RegGroupsScreen = ({ navigation }) => {
       .catch((e) => console.log(e));
   };
 
-  const completeButton = () => {
-    return (
-      <Pressable
-        // style={styles.completeButton}
-        style={[
-          styles.completeButton,
-          {
-            backgroundColor: canComplete
-              ? GLOBALS.COLOR.HEADERBLUE
-              : GLOBALS.COLOR.DISABLED,
-          },
-        ]}
-        // disabled={!canComplete}
-        onPress={() => {
-          onCompletePress();
-        }}
-      >
-        <Text style={styles.completeText}>Завершить регистрацию</Text>
-      </Pressable>
-    );
-  };
-
   const noGroups = () => {
     return (
       <Text style={styles.noGroupsText}>
-        В данный момент нет групп для проведения регистрации
+        В данный момент нет групп для судейства
       </Text>
     );
   };
@@ -206,8 +184,6 @@ const RegGroupsScreen = ({ navigation }) => {
           refreshing={refreshing}
           onRefresh={handleRefresh}
         />
-
-        {data.length > 0 ? completeButton() : noGroups()}
       </View>
     </SafeAreaView>
   );
@@ -304,4 +280,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegGroupsScreen;
+export default ReffGroupsScreen;

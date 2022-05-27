@@ -3,11 +3,12 @@ export default {
   BASE_URL: "http://someurl.com",
   COLOR: {
     BLUE: "#357EBD",
-    // GREY: "#F4F4F4",
+    LIGHTGREY: "#F4F4F4",
     GREY: "#E4E4E4",
     DARKGREY: "#DADADA",
     HEADERBLUE: "#428BCA",
     LABEL: "#A8A8A8",
+    DISABLED: "#AAA",
   },
 };
 

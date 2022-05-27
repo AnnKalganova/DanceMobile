@@ -5,95 +5,114 @@ import GLOBALS from "../../Globals";
 
 const HomeScreen = ({ navigation }) => {
   const [showScanButton, setShowScanButton] = useState(true);
-  const [userType, setUserType] = useState("");
 
   useEffect(() => {
     const willFocusHandler = navigation.addListener("willFocus", () => {
-      if (global.baseURL != "") setShowScanButton(false);
-      if (global.baseURL != userType) setUserType(global.baseURL);
+      setShowScanButton(global.baseURL == "");
     });
 
     return () => willFocusHandler.remove();
   }, []);
 
+  const ScanButton = (navigation) => {
+    return (
+      <Pressable
+        style={styles.pressable_button}
+        onPress={() => {
+          navigation.navigate("QrCode");
+        }}
+      >
+        <MaterialCommunityIcons name="qrcode-scan" style={styles.btn_icon} />
+        <Text style={styles.btn_text}>Сканировать</Text>
+      </Pressable>
+    );
+  };
+
+  const ScanLink = (navigation) => {
+    return (
+      <Pressable
+        style={styles.pressable_link}
+        onPress={() => {
+          navigation.navigate("QrCode");
+        }}
+      >
+        <Text style={styles.lnk_text}>Новый QR Code</Text>
+      </Pressable>
+    );
+  };
+
+  const RegistrationButton = (navigation) => {
+    return (
+      <Pressable
+        style={styles.pressable_button}
+        onPress={() => {
+          navigation.navigate("RegGroups");
+        }}
+      >
+        <Text style={styles.btn_text}>Вернуться к регистрации</Text>
+      </Pressable>
+    );
+  };
+
+  const RefereeButton = (navigation) => {
+    return (
+      <Pressable
+        style={styles.pressable_button}
+        onPress={() => {
+          navigation.navigate("Groups");
+        }}
+      >
+        <Text style={styles.btn_text}>Вернуться к судейству</Text>
+      </Pressable>
+    );
+  };
+
   return (
-    <View style={styles.view}>
-      <Image style={styles.image} source={require("../../assets/pair.png")} />
+    <View style={styles.container}>
+      <View style={styles.imageView}>
+        <Image style={styles.image} source={require("../../assets/pair.png")} />
+      </View>
 
-      {showScanButton && ScanButton(navigation)}
+      <View style={styles.buttonsView}>
+        {showScanButton && ScanButton(navigation)}
 
-      {!showScanButton &&
-        global.userType === "Registration" &&
-        RegistrationButton(navigation)}
+        {!showScanButton &&
+          global.userType === "Registration" &&
+          RegistrationButton(navigation)}
 
-      {!showScanButton &&
-        global.userType === "Referee" &&
-        RefereeButton(navigation)}
+        {!showScanButton &&
+          global.userType === "Referee" &&
+          RefereeButton(navigation)}
 
-      {!showScanButton && ScanLink(navigation)}
+        {!showScanButton && ScanLink(navigation)}
+      </View>
     </View>
   );
 };
 
-const ScanButton = (navigation) => {
-  return (
-    <Pressable
-      style={styles.pressable_button}
-      onPress={() => {
-        navigation.navigate("QrCode");
-      }}
-    >
-      <MaterialCommunityIcons name="qrcode-scan" style={styles.btn_icon} />
-      <Text style={styles.btn_text}>Сканировать</Text>
-    </Pressable>
-  );
-};
-
-const ScanLink = (navigation) => {
-  return (
-    <Pressable
-      style={styles.pressable_link}
-      onPress={() => {
-        navigation.navigate("QrCode");
-      }}
-    >
-      <Text style={styles.lnk_text}>Новый QR Code</Text>
-    </Pressable>
-  );
-};
-
-const RegistrationButton = (navigation) => {
-  return (
-    <Pressable
-      style={styles.pressable_button}
-      onPress={() => {
-        navigation.navigate("RegGroups");
-      }}
-    >
-      <Text style={styles.btn_text}>Вернуться к регистрации</Text>
-    </Pressable>
-  );
-};
-
-const RefereeButton = (navigation) => {
-  return (
-    <Pressable
-      style={styles.pressable_button}
-      onPress={() => {
-        navigation.navigate("Groups");
-      }}
-    >
-      <Text style={styles.btn_text}>Вернуться к судейству</Text>
-    </Pressable>
-  );
-};
-
 const styles = StyleSheet.create({
-  view: {
+  container: {
     backgroundColor: "white",
-    height: "100%",
-    paddingTop: "25%",
+    // height: "100%",
+    // paddingTop: "25%",
+    flex: 1,
+    flexDirection: "column",
+    // borderWidth: 1,
   },
+
+  imageView: {
+    // borderWidth: 1,
+    flex: 5,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  buttonsView: {
+    // borderWidth: 1,
+    flex: 2,
+    paddingVertical: 10,
+  },
+
   image: {
     alignSelf: "center",
   },
@@ -103,8 +122,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 12,
-    paddingHorizontal: 32,
-    marginHorizontal: 25,
+    marginHorizontal: 16,
     marginTop: 10,
     borderRadius: 4,
     elevation: 3,
@@ -130,9 +148,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 12,
-    paddingHorizontal: 32,
-    marginHorizontal: 25,
-    marginTop: 100,
+    marginHorizontal: 16,
     borderRadius: 4,
     elevation: 3,
     backgroundColor: GLOBALS.COLOR.HEADERBLUE,
