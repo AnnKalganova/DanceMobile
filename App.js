@@ -8,7 +8,8 @@ import RegGroupsScreen from "./src/screens/RegGroupsScreen";
 import RegPairsScreen from "./src/screens/RegPairsScreen";
 import RegEditPairScreen from "./src/screens/RegEditPairScreen";
 
-import ReffGroupsScreen from "./src/screens/ReffGroupsScreen";
+import RefGroupsScreen from "./src/screens/RefGroupsScreen";
+import RefPairsScreen from "./src/screens/RefPairsScreen";
 
 import GLOBALS from "./Globals";
 
@@ -47,7 +48,7 @@ const navigator = createStackNavigator(
     RegPairs: {
       screen: RegPairsScreen,
       navigationOptions: {
-        title: "Список пар",
+        title: "Оценка пар",
       },
     },
 
@@ -58,10 +59,17 @@ const navigator = createStackNavigator(
       },
     },
 
-    ReffGroups: {
-      screen: ReffGroupsScreen,
+    RefGroups: {
+      screen: RefGroupsScreen,
       navigationOptions: {
-        title: "Список групп",
+        title: "Расписание турнира",
+      },
+    },
+
+    RefPairs: {
+      screen: RefPairsScreen,
+      navigationOptions: {
+        title: "Судейство",
       },
     },
 

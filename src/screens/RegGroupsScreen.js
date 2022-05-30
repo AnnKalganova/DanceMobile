@@ -60,6 +60,7 @@ const RegGroupsScreen = ({ navigation }) => {
   const checkGroupsCompletion = (result) => {
     let allCompleted = true;
 
+    let i = 0;
     for (i = 0; i < result.length; i++) {
       if (result[i].completedState == false) {
         allCompleted = false;
@@ -192,10 +193,7 @@ const RegGroupsScreen = ({ navigation }) => {
         <Text style={styles.userName}>
           {global.userInfo.lastName} {global.userInfo.firstName}
         </Text>
-        <Text style={styles.userRole}>
-          {global.userType == "Registration" ? "(Организатор)" : undefined}
-          {global.userType == "Referee" ? "(Судья)" : undefined}
-        </Text>
+        <Text style={styles.userRole}>(Организатор)</Text>
       </View>
 
       <View style={styles.bottomView}>

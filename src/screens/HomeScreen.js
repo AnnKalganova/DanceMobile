@@ -5,10 +5,12 @@ import GLOBALS from "../../Globals";
 
 const HomeScreen = ({ navigation }) => {
   const [showScanButton, setShowScanButton] = useState(true);
+  const [userType, setUserType] = useState(true);
 
   useEffect(() => {
     const willFocusHandler = navigation.addListener("willFocus", () => {
       setShowScanButton(global.baseURL == "");
+      setUserType(global.userType);
     });
 
     return () => willFocusHandler.remove();
@@ -59,7 +61,7 @@ const HomeScreen = ({ navigation }) => {
       <Pressable
         style={styles.pressable_button}
         onPress={() => {
-          navigation.navigate("Groups");
+          navigation.navigate("RefGroups");
         }}
       >
         <Text style={styles.btn_text}>Вернуться к судейству</Text>

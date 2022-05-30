@@ -47,11 +47,13 @@ const QrCodeScreen = ({ navigation }) => {
 
       if (baseUrl.includes("Registration")) {
         global.userType = "Registration";
+        navigation.replace("RegGroups");
       } else if (global.baseURL.includes("Referee")) {
         global.userType = "Referee";
+        navigation.replace("RefGroups");
       }
 
-      navigation.replace("RegGroups");
+      // navigation.replace("RegGroups");
       // navigation.navigate("Groups");
     } catch (error) {
       console.log(`Catch: ${error}`);
