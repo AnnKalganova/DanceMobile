@@ -13,9 +13,7 @@ import GLOBALS from "../../Globals";
 
 const RefPairsScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
   const [data, setData] = useState([]);
-  const [error, setError] = useState(null);
   const [canComplete, setCanComplete] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalData, setModalData] = useState(null);
@@ -53,22 +51,15 @@ const RefPairsScreen = ({ navigation }) => {
       .then((res) => res.json())
       .then(
         (result) => {
-          setIsLoaded(true);
           setData(result);
           setCanComplete(checkHeatCompletion(result.pairsInfo));
-
-          console.log("getPairs - fetched");
-          console.log("getPairs - fetched - resutl: ", result);
         },
         (error) => {
-          setIsLoaded(true);
-          setData(error);
+          console.log("Fetch error: ", error);
         }
       )
       .catch((e) => {
-        setIsLoaded(true);
-        setError(e);
-        console.log(e);
+        console.log("Fetch catch: ", e);
       })
       .finally(() => {
         setRefreshing(false);
@@ -94,11 +85,11 @@ const RefPairsScreen = ({ navigation }) => {
             {
               backgroundColor:
                 pair.score == 1
-                  ? "#F9D423"
-                  : pair.score == 2
                   ? "#90C67B"
+                  : pair.score == 2
+                  ? "#F9D423"
                   : pair.score == 3
-                  ? "#C1ADDD"
+                  ? "#F97C23"
                   : GLOBALS.COLOR.GREY,
             },
           ]}
@@ -119,7 +110,6 @@ const RefPairsScreen = ({ navigation }) => {
 
   const onCompletePress = () => {
     if (!canComplete) {
-      // Alert.alert("", "Не всем парам присвоены номера");
       Alert.alert(
         "",
         "Для перехода к следующему заходу надо всем парам выставить оценки"
@@ -145,8 +135,6 @@ const RefPairsScreen = ({ navigation }) => {
   };
 
   const completeHeat = () => {
-    console.log("completeHeat");
-
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -155,16 +143,10 @@ const RefPairsScreen = ({ navigation }) => {
       }),
     };
 
-    console.log("completeHeat - ", requestOptions);
-
     fetch(global.baseURL + "/complete/", requestOptions)
       .then(
         (result) => {
           if (result.status == 200) {
-            // global.baseURL = "";
-            // global.userType = "";
-            // global.userInfo = null;
-            // navigation.goBack();
             getPairs();
           } else {
             Alert.alert("Ошибка!", "Код ошибки: " + result.status, [
@@ -175,19 +157,20 @@ const RefPairsScreen = ({ navigation }) => {
           }
         },
         (error) => {
-          console.log(
-            "Fetch ERROR:",
-            "Response Body -> " + JSON.stringify(error)
-          );
+          console.log("Fetch error: ", error);
         }
       )
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log("Fetch catch: ", e);
+      })
+      .finally(() => {
+        setRefreshing(false);
+      });
   };
 
   const completeButton = () => {
     return (
       <Pressable
-        // style={styles.completeButton}
         style={[
           styles.completeButton,
           {
@@ -196,7 +179,6 @@ const RefPairsScreen = ({ navigation }) => {
               : GLOBALS.COLOR.DISABLED,
           },
         ]}
-        // disabled={!canComplete}
         onPress={() => {
           onCompletePress();
         }}
@@ -206,14 +188,7 @@ const RefPairsScreen = ({ navigation }) => {
     );
   };
 
-  // const showScoreDialog = (pair) => {
-  //   return (
-
-  //   );
-  // };
-
   const setPairScore = (pair, score) => {
-    // console.log("setPairScore - start");
     setRefreshing(true);
 
     const requestOptions = {
@@ -227,30 +202,19 @@ const RefPairsScreen = ({ navigation }) => {
     };
 
     fetch(global.baseURL + "/setScore/", requestOptions)
-      // .then((res) => res.json())
       .then(
-        (result) => {
-          setIsLoaded(true);
-          // setData(result);
-          // console.log("setPairScore - fetched");
-        },
+        (result) => {},
         (error) => {
-          setIsLoaded(true);
-          // setData(error);
-          // console.log("setPairScore - error");
+          console.log("Fetch error: ", error);
         }
       )
       .catch((e) => {
-        setIsLoaded(true);
-        setError(e);
-        console.log(e);
+        console.log("Fetch catch: ", e);
       })
       .finally(() => {
         setRefreshing(false);
         getPairs();
-        // console.log("setPairScore - finally");
       });
-    // console.log("setPairScore - end");
   };
 
   const noGroups = () => {
@@ -264,11 +228,6 @@ const RefPairsScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topView}>
-        {/* <Text style={styles.groupName}>{group.name}</Text> */}
-        {/* <Text style={styles.groupName}>
-          Танец: {data.dance}, Заход: {data.heat}
-        </Text> */}
-
         {data.dance == null && (
           <Text style={styles.groupName}>{group.name}</Text>
         )}
@@ -278,26 +237,9 @@ const RefPairsScreen = ({ navigation }) => {
         {data.dance != null && (
           <Text style={styles.userRole}>Заход: {data.heat}</Text>
         )}
-
-        {/* (
-          <Text style={styles.groupName}>Танец: {data.dance}</Text> 
-            <Text style={styles.userRole}>Заход: {data.heat}</Text>
-          
-        ) : (
-          <Text style={styles.groupName}>{group.name}</Text>
-        )} */}
-
-        {/* <Text style={styles.groupName}>Танец: {data.dance}</Text>
-        <Text style={styles.userRole}>Заход: {data.heat}</Text> */}
-
-        {/* <Text style={styles.userRole}>
-          Танец: {data.dance}, Заход: {data.heat}
-        </Text>
-        <Text style={styles.userRole}>Оценки: По сумме балов</Text> */}
       </View>
       <View style={styles.bottomView}>
         <FlatList
-          style={styles.pairsList}
           data={data.pairsInfo}
           numColumns={2}
           renderItem={renderItem}
@@ -305,19 +247,10 @@ const RefPairsScreen = ({ navigation }) => {
           refreshing={refreshing}
           onRefresh={handleRefresh}
         />
-        {/* {completeButton()} */}
 
         {data.dance != null ? completeButton() : noGroups()}
 
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setModalVisible(!modalVisible);
-          }}
-        >
+        <Modal animationType="fade" transparent={true} visible={modalVisible}>
           <Pressable
             style={styles.centeredView}
             onPress={() => {
@@ -340,6 +273,7 @@ const RefPairsScreen = ({ navigation }) => {
                   }}
                 >
                   <Text style={styles.scoreValue}>3</Text>
+                  <Text style={styles.scoreLabel3}>балла</Text>
                 </Pressable>
 
                 <Pressable
@@ -350,6 +284,7 @@ const RefPairsScreen = ({ navigation }) => {
                   }}
                 >
                   <Text style={styles.scoreValue}>2</Text>
+                  <Text style={styles.scoreLabel2}>балла</Text>
                 </Pressable>
 
                 <Pressable
@@ -360,6 +295,7 @@ const RefPairsScreen = ({ navigation }) => {
                   }}
                 >
                   <Text style={styles.scoreValue}>1</Text>
+                  <Text style={styles.scoreLabel1}>балл</Text>
                 </Pressable>
               </View>
             </Pressable>
@@ -372,13 +308,13 @@ const RefPairsScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   backColor3: {
-    backgroundColor: "#C1ADDD",
+    backgroundColor: "#F97C23",
   },
   backColor2: {
-    backgroundColor: "#90C67B",
+    backgroundColor: "#F9D423",
   },
   backColor1: {
-    backgroundColor: "#F9D423",
+    backgroundColor: "#90C67B",
   },
   backColor0: {
     backgroundColor: GLOBALS.COLOR.GREY,
@@ -391,6 +327,7 @@ const styles = StyleSheet.create({
     marginTop: 150,
     marginHorizontal: 20,
     color: GLOBALS.COLOR.LABEL,
+    fontSize: 18,
   },
 
   centeredView: {
@@ -399,14 +336,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0.5)",
   },
+
   modalView: {
     margin: 20,
     backgroundColor: "white",
     borderRadius: 20,
-    // paddingHorizontal: 10,
     paddingBottom: 10,
     alignItems: "center",
-    // alignItems: "stretch",
     flexDirection: "column",
     shadowColor: "#000",
     shadowOffset: {
@@ -425,47 +361,28 @@ const styles = StyleSheet.create({
   },
 
   modalScoresView: {
-    // borderWidth: 1,
     flexDirection: "row",
-    // alignItems: "stretch",
-    // justifyContent: "center",
     paddingTop: 10,
     paddingHorizontal: 5,
     height: 100,
   },
 
   modalScore: {
-    // borderWidth: 1,
     flex: 1,
-    // justifyContent: "center",
-    // alignItems: "stretch",
-    // margin: 15,
-
+    marginHorizontal: 5,
+    paddingTop: 30,
+    paddingBottom: 10,
     alignItems: "center",
     justifyContent: "center",
-    // marginHorizontal: 10,
-    // marginBottom: 5,
     borderRadius: 10,
-    marginHorizontal: 5,
-    paddingVertical: 10,
   },
 
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
   textStyle: {
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
   },
+
   modalText: {
     marginBottom: 15,
     textAlign: "center",
@@ -484,9 +401,6 @@ const styles = StyleSheet.create({
   bottomView: {
     flex: 1,
     backgroundColor: GLOBALS.COLOR.LIGHTGREY,
-    // borderWidth: 1,
-    // flexWrap: "wrap",
-    // flexDirection: "row",
     flexDirection: "column",
   },
 
@@ -502,29 +416,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  pairsList: {
-    // flex: 1,
-    // borderWidth: 1,
-    // alignSelf: "stretch",
-  },
-
   item_container: {
-    // paddingVertical: 10,
-    // marginHorizontal: 16,
-    // borderColor: GLOBALS.COLOR.DARKGREY,
     backgroundColor: GLOBALS.COLOR.LIGHTGREY,
     flexDirection: "column",
-    // backgroundColor: "white",
-    // borderWidth: 1,
     flex: 0.5,
     justifyContent: "center",
     alignItems: "stretch",
-    // margin: 10,
   },
 
   item: {
-    // paddingVertical: 10,
-    // marginHorizontal: 16,
     borderColor: GLOBALS.COLOR.DARKGREY,
     flexDirection: "column",
     backgroundColor: "white",
@@ -548,14 +448,12 @@ const styles = StyleSheet.create({
 
   numberPlace: {
     flex: 3,
-    // borderWidth: 1,
     alignItems: "center",
   },
 
   scorePlace: {
     flex: 1,
     alignItems: "center",
-    // borderWidth: 1,
     marginHorizontal: 10,
     marginBottom: 5,
     borderRadius: 10,
@@ -564,13 +462,29 @@ const styles = StyleSheet.create({
   pairNumber: {
     fontSize: 60,
     fontWeight: "500",
-    // borderWidth: 1,
   },
 
   scoreValue: {
     fontSize: 28,
     fontWeight: "500",
-    // borderWidth: 1,
+  },
+
+  scoreLabel3: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#954004",
+  },
+
+  scoreLabel2: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#957d04",
+  },
+
+  scoreLabel1: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#3f6b2e",
   },
 
   completeButton: {

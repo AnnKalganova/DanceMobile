@@ -52,9 +52,6 @@ const QrCodeScreen = ({ navigation }) => {
         global.userType = "Referee";
         navigation.replace("RefGroups");
       }
-
-      // navigation.replace("RegGroups");
-      // navigation.navigate("Groups");
     } catch (error) {
       console.log(`Catch: ${error}`);
       setRescan(true);

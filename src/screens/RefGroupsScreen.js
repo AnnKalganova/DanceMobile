@@ -7,24 +7,13 @@ import {
   SafeAreaView,
   Pressable,
   Alert,
-  Modal,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
-import GLOBALS from "../../Globals";
-
-import { AntDesign } from "@expo/vector-icons"; //user
-import { Entypo } from "@expo/vector-icons"; //star, trofy
-import { EvilIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
-import { FontAwesome5 } from "@expo/vector-icons";
+import GLOBALS from "../../Globals";
 
 const RefGroupsScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
   const [data, setData] = useState([]);
-  const [error, setError] = useState(null);
-  const [canComplete, setCanComplete] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     const willFocusHandler = navigation.addListener("willFocus", () => {
@@ -43,20 +32,15 @@ const RefGroupsScreen = ({ navigation }) => {
       .then((res) => res.json())
       .then(
         (result) => {
-          setIsLoaded(true);
           setData(result);
           console.log("GetGroups - fetched");
         },
         (error) => {
-          setIsLoaded(true);
-          setData(error);
-          console.log("GetGroups - fetched - error");
+          console.log("Fetch error: ", error);
         }
       )
       .catch((e) => {
-        setIsLoaded(true);
-        setError(e);
-        console.log(e);
+        console.log("Fetch catch: ", e);
       })
       .finally(() => {
         setRefreshing(false);
@@ -76,7 +60,10 @@ const RefGroupsScreen = ({ navigation }) => {
         return;
       case 2:
         if (group.isAccessGranted == false) {
-          Alert.alert(alertTitle, "Группа соревнуется");
+          Alert.alert(
+            alertTitle,
+            "Группа соревнуется. Вы не были назначены судьей на данную гуппу"
+          );
           return;
         }
         break;
@@ -88,17 +75,6 @@ const RefGroupsScreen = ({ navigation }) => {
     navigation.navigate("RefPairs", {
       group: group,
     });
-
-    // return;
-
-    // if (group.state == ) {
-    //   // Alert.alert("", "Не всем парам присвоены номера");
-    //   Alert.alert(
-    //     "",
-    //     "Для завершение регистрации необходимо всем парам присвоить номера"
-    //   );
-    //   return;
-    // }
   };
 
   const Item = ({ group }) => (
@@ -123,11 +99,11 @@ const RefGroupsScreen = ({ navigation }) => {
           style={
             group.state == 3
               ? styles.groupTitle3
-              : // : group.state == 2
-                // ? styles.groupTitle2
-                // : group.state == 1
-                // ? styles.groupTitle1
-                styles.groupTitle
+              : group.state == 2
+              ? styles.groupTitle2
+              : group.state == 1
+              ? styles.groupTitle1
+              : styles.groupTitle
           }
           numberOfLines={1}
         >
@@ -136,59 +112,12 @@ const RefGroupsScreen = ({ navigation }) => {
         {(() => {
           if (group.isAccessGranted == true) {
             return (
-              // <FontAwesome
-              //   name="balance-scale"
-              //   style={group.state == 3 ? styles.refIcon3 : styles.refIcon}
-              // />
-              // <AntDesign
-              //   name="star"
-              //   style={group.state == 3 ? styles.refIcon3 : styles.refIcon}
-              // />
-
               <FontAwesome
                 name="star"
                 style={group.state == 3 ? styles.refIcon3 : styles.refIcon}
               />
             );
           }
-
-          return;
-          /* <Feather
-          name="check"
-          style={[
-            styles.groupCompleteIcon,
-            {
-              color: group.completedState ? "green" : "white",
-            },
-          ]}
-        /> */
-
-          return (
-            /* <AntDesign name="user" style={styles.refIcon} /> */
-            /* <Entypo name="star" style={styles.refIcon} /> */
-            /* <Entypo name="star-outlined" style={styles.refIcon} /> */
-
-            // <Entypo
-            //   name="trophy"
-            //   style={group.state == 3 ? styles.refIcon3 : styles.refIcon}
-            // />
-
-            <FontAwesome
-              name="balance-scale"
-              style={group.state == 3 ? styles.refIcon3 : styles.refIcon}
-            />
-
-            /* <EvilIcons name="chart" style={styles.refIcon} /> */
-            /* <Feather name="award" style={styles.refIcon} /> */
-
-            /* <FontAwesome name="user" style={styles.refIcon} /> */
-            /* <FontAwesome name="trophy" style={styles.refIcon} /> */
-            /* <FontAwesome name="balance-scale" style={styles.refIcon} />
-        <FontAwesome5 name="award" style={styles.refIcon} />
-        <FontAwesome5 name="medal" style={styles.refIcon} />
-        <FontAwesome5 name="user" style={styles.refIcon} />
-        <FontAwesome5 name="user-alt" style={styles.refIcon} /> */
-          );
         })()}
       </View>
     </Pressable>
@@ -246,33 +175,6 @@ const styles = StyleSheet.create({
   refIcon3: {
     color: GLOBALS.COLOR.LABEL,
     fontSize: 24,
-  },
-
-  noGroupsText: {
-    alignSelf: "center",
-    position: "absolute",
-    textAlign: "center",
-    marginTop: 150,
-    marginHorizontal: 20,
-    color: GLOBALS.COLOR.LABEL,
-  },
-
-  completeButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 12,
-    marginVertical: 20,
-    marginHorizontal: 16,
-    borderRadius: 4,
-    elevation: 3,
-  },
-  completeText: {
-    fontSize: 16,
-    lineHeight: 21,
-    fontWeight: "bold",
-    letterSpacing: 0.25,
-    color: "white",
   },
 
   item: {
@@ -370,21 +272,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: GLOBALS.COLOR.BLUE,
     flex: 1,
-    borderWidth: 1,
   },
 
   groupTitle3: {
     fontSize: 20,
     color: GLOBALS.COLOR.LABEL,
     flex: 1,
-  },
-
-  groupCompleteIcon: {
-    fontSize: 26,
-    fontWeight: "700",
-    alignSelf: "center",
-    alignContent: "center",
-    paddingHorizontal: 4,
   },
 
   topView: {

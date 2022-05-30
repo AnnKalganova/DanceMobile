@@ -83,7 +83,16 @@ const RegEditPairScreen = ({ navigation }) => {
           if (result.status == 200) {
             navigation.goBack();
           } else {
-            Alert.alert("Ошибка!", "Код ошибки: " + result.status, [
+            let errorMessage =
+              result.status == 1
+                ? "Такой партнер уже участвует в группе"
+                : result.status == 2
+                ? "Такая партнерша уже учавствует в группе"
+                : result.status == 3
+                ? "Такой номер присвоен дургой паре"
+                : "Код ошибки: " + result.status;
+
+            Alert.alert("Ошибка!", errorMessage, [
               {
                 text: "OK",
               },
@@ -91,13 +100,12 @@ const RegEditPairScreen = ({ navigation }) => {
           }
         },
         (error) => {
-          console.log(
-            "Fetch ERROR:",
-            "Response Body -> " + JSON.stringify(error)
-          );
+          console.log("Fetch error: ", error);
         }
       )
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log("Fetch catch: ", e);
+      });
   };
 
   const onDeletePress = () => {
@@ -136,13 +144,12 @@ const RegEditPairScreen = ({ navigation }) => {
           }
         },
         (error) => {
-          console.log(
-            "Fetch ERROR:",
-            "Response Body -> " + JSON.stringify(error)
-          );
+          console.log("Fetch error: ", error);
         }
       )
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log("Fetch catch: ", e);
+      });
   };
 
   const deleteButton = () => {

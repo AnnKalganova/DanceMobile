@@ -13,9 +13,7 @@ import GLOBALS from "../../Globals";
 
 const RegGroupsScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
   const [data, setData] = useState([]);
-  const [error, setError] = useState(null);
   const [canComplete, setCanComplete] = useState(false);
 
   useEffect(() => {
@@ -35,21 +33,15 @@ const RegGroupsScreen = ({ navigation }) => {
       .then((res) => res.json())
       .then(
         (result) => {
-          setIsLoaded(true);
           setData(result);
           setCanComplete(checkGroupsCompletion(result));
-          console.log("GetGroups - fetched");
         },
         (error) => {
-          setIsLoaded(true);
-          setData(error);
-          console.log("GetGroups - fetched - error");
+          console.log("Fetch error: ", error);
         }
       )
       .catch((e) => {
-        setIsLoaded(true);
-        setError(e);
-        console.log(e);
+        console.log("Fetch catch: ", e);
       })
       .finally(() => {
         setRefreshing(false);
@@ -105,7 +97,6 @@ const RegGroupsScreen = ({ navigation }) => {
 
   const onCompletePress = () => {
     if (!canComplete) {
-      // Alert.alert("", "Не всем парам присвоены номера");
       Alert.alert(
         "",
         "Для завершение регистрации необходимо всем парам присвоить номера"
@@ -148,19 +139,17 @@ const RegGroupsScreen = ({ navigation }) => {
           }
         },
         (error) => {
-          console.log(
-            "Fetch ERROR:",
-            "Response Body -> " + JSON.stringify(error)
-          );
+          console.log("Fetch error: ", error);
         }
       )
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log("Fetch catch: ", e);
+      });
   };
 
   const completeButton = () => {
     return (
       <Pressable
-        // style={styles.completeButton}
         style={[
           styles.completeButton,
           {
@@ -169,7 +158,6 @@ const RegGroupsScreen = ({ navigation }) => {
               : GLOBALS.COLOR.DISABLED,
           },
         ]}
-        // disabled={!canComplete}
         onPress={() => {
           onCompletePress();
         }}
@@ -224,6 +212,7 @@ const styles = StyleSheet.create({
     marginTop: 150,
     marginHorizontal: 20,
     color: GLOBALS.COLOR.LABEL,
+    fontSize: 18,
   },
 
   completeButton: {

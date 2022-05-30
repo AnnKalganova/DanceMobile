@@ -1,6 +1,6 @@
 export default {
-  STORE_KEY: "a56z0fzrNpl^2",
-  BASE_URL: "http://someurl.com",
+  // STORE_KEY: "a56z0fzrNpl^2",
+  // BASE_URL: "http://someurl.com",
   COLOR: {
     BLUE: "#357EBD",
     LIGHTGREY: "#F4F4F4",
